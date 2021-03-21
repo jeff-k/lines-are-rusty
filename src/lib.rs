@@ -1,8 +1,10 @@
 pub mod render {
-    pub mod svg;
+    pub mod bitmap;
     pub mod pdf;
     pub mod renderlib;
+    pub mod svg;
 }
+pub use render::bitmap::render_bitmap;
 pub use render::pdf::render_pdf;
 pub use render::svg::render_svg;
 use std::error;
@@ -127,7 +129,6 @@ pub struct Line {
     pub brush_base_size: f32,
     pub points: Vec<Point>,
 }
-
 
 #[derive(Default, Debug)]
 pub struct Point {

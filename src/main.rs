@@ -64,7 +64,6 @@ fn main() {
         None => OutputType::SVG,
     };
 
-
     let auto_crop = !matches.is_present("no-auto-crop");
     let colors = matches
         .value_of("custom-colors")

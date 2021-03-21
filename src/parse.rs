@@ -66,7 +66,7 @@ impl LinesDataReader<'_> {
             } else {
                 0
             },
-            points: self.read_points()?
+            points: self.read_points()?,
         })
     }
 

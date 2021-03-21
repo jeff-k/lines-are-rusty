@@ -42,11 +42,15 @@ pub fn render_fineliner_line(line: &Line, color: &str) -> svg::node::element::Pa
         .set("class", "Fineliner")
 }
 
-pub fn render_svg(output: &mut dyn Write, page: &Page, auto_crop: bool, layer_colors: &LayerColors) {
+pub fn render_svg(
+    output: &mut dyn Write,
+    page: &Page,
+    auto_crop: bool,
+    layer_colors: &LayerColors,
+) {
     let mut doc = svg::Document::new();
     for (layer_id, layer) in page.layers.iter().enumerate() {
-        let mut layer_group = svg::node::element::Group::new()
-            .set("class", "layer");
+        let mut layer_group = svg::node::element::Group::new().set("class", "layer");
         for line in layer.lines.iter() {
             if line.points.is_empty() {
                 continue;
@@ -87,7 +91,9 @@ pub fn render_svg(output: &mut dyn Write, page: &Page, auto_crop: bool, layer_co
                             | BrushType::Eraser
                             | BrushType::EraseArea
                             | BrushType::EraseAll
-                            | BrushType::SelectionBrush => unreachable!("Should have been handled above"),
+                            | BrushType::SelectionBrush => {
+                                unreachable!("Should have been handled above")
+                            }
                         };
 
                         let mut path = svg::node::element::Path::new()
@@ -105,7 +111,12 @@ pub fn render_svg(output: &mut dyn Write, page: &Page, auto_crop: bool, layer_co
         doc = doc.add(layer_group);
     }
     if auto_crop {
-        let BoundingBox {min_x, min_y, max_x, max_y} = BoundingBox::new().enclose_page(page);
+        let BoundingBox {
+            min_x,
+            min_y,
+            max_x,
+            max_y,
+        } = BoundingBox::new().enclose_page(page);
         doc = doc.set("viewBox", (min_x, min_y, max_x - min_x, max_y - min_y));
     } else {
         doc = doc.set("viewBox", (0, 0, 1404, 1872));
