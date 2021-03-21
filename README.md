@@ -1,5 +1,25 @@
 # Lines Are Rusty
 
+```
+      X                                                                       
+     XXX                                                                      
+       X                                                                      
+        X                                                                     
+        X                              XXXXX            X                     
+        X                             X     X           XX    X               
+        X                             X     X             X   XXX             
+         X                            XX    X             XX  X  X            
+         X                            X XXXX                XX   X            
+         X                            XX                         X            
+          X   XXXXX                     X                       XX            
+          X  X     X                    X      X               X              
+          X X      X                     XXXX XX            XXX               
+           X       X                        XXX                               
+           X        X                                                         
+           X
+```
+
+
 Re-implementation of https://github.com/ax3l/lines-are-beautiful in Rust.
 
 Very, very early version.

@@ -2,4 +2,4 @@
 **/*.rs.bk
 tmp/**
 output.pdf
-Cargo.lock
+/Cargo.lock
