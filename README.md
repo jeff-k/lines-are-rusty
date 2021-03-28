@@ -19,6 +19,7 @@
            X
 ```
 
+**...this fork has some half-baked functions for extracting bitmaps from the small-sized graph paper template. I'm using it to experiment with handwriting recognition.**
 
 Re-implementation of https://github.com/ax3l/lines-are-beautiful in Rust.
 
