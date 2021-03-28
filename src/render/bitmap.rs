@@ -37,7 +37,13 @@ pub fn read_page(page: &Page) -> [[[[u8; 26]; 26]; 36]; 27] {
     image
 }
 
-pub fn get_sq(row: usize, col: usize, x_offset: isize, y_offset: isize, line: &Line) -> [[u8; 26]; 26] {
+pub fn get_sq(
+    row: usize,
+    col: usize,
+    x_offset: isize,
+    y_offset: isize,
+    line: &Line,
+) -> [[u8; 26]; 26] {
     let mut image = [[0; 26]; 26];
     for i in 1..line.points.len() {
         let p1 = &line.points[i - 1];
