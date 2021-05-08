@@ -2,10 +2,12 @@ pub mod render {
     pub mod bitmap;
     pub mod pdf;
     pub mod renderlib;
+    pub mod strokes;
     pub mod svg;
 }
 pub use render::bitmap::render_bitmap;
 pub use render::pdf::render_pdf;
+//pub use render::strokes;
 pub use render::svg::render_svg;
 use std::error;
 use std::fmt;
