@@ -37,7 +37,7 @@ impl Glyph<'_> {
             let mut last = 'z';
             for i in 0..stroke.points.len() {
                 let p = &stroke.points[i];
-                let chr = discretise9(p, self.cell.0 as f32, self.cell.1 as f32);
+                let chr = discretise25(p, self.cell.0 as f32, self.cell.1 as f32);
                 if chr != last {
                     last = chr;
                     dstrokes.push(chr);
