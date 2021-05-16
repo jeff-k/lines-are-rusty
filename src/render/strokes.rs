@@ -52,7 +52,7 @@ fn discretise4d(point: &Point, x: f32, y: f32) -> char {
             3
         }
     };
-    let d = (point.direction / 45.) as usize;
+    let d = (point.direction / 0.785398) as usize;
     println!("{:?} - {:?}", point.direction, d);
     mat[d][q]
 }
