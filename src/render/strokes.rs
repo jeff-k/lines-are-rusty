@@ -25,6 +25,25 @@ fn discretise9(point: &Point, x: f32, y: f32) -> char {
     mat[y][x]
 }
 
+fn discretise4d(point: &Point, x: f32, y: f32) -> char {
+    let mat: [[char; 4]; 8] = [
+        ['a', 'b', 'c', 'd'],
+        ['d', 'e', 'f', 'g'],
+        ['h', 'i', 'j', 'k'],
+        ['l', 'm', 'n', 'o'],
+        ['p', 'q', 'r', 's'],
+        ['t', 'u', 'v', 'w'],
+        ['x', 'y', 'z', '0'],
+        ['1', '2', '3', '4'],
+    ];
+
+    let x = ((point.x - (52. * x)) / 13.) as usize;
+    let y = ((point.y - (52. * y)) / 13.) as usize;
+    let d = (point.direction / 45.) as usize;
+    println!("{:?} - {:?}", point.direction, d);
+    mat[d][x + y]
+}
+
 struct Glyph<'a> {
     strokes: Vec<&'a Line>,
     cell: (usize, usize),
@@ -37,7 +56,7 @@ impl Glyph<'_> {
             let mut last = 'z';
             for i in 0..stroke.points.len() {
                 let p = &stroke.points[i];
-                let chr = discretise25(p, self.cell.0 as f32, self.cell.1 as f32);
+                let chr = discretise4d(p, self.cell.0 as f32, self.cell.1 as f32);
                 if chr != last {
                     last = chr;
                     dstrokes.push(chr);
