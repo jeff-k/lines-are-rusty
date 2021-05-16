@@ -54,13 +54,13 @@ fn id_cell(x: f32, y: f32) -> (usize, usize) {
     ((x / s) as usize, (y / s) as usize)
 }
 
-pub fn read_page(page: &Page) -> u32 {
+pub fn read_page(page: &Page) -> HashMap<(usize, usize), Vec<char>> {
     let mut cellstrokes = HashMap::new();
     for layer in &page.layers {
         for line in &layer.lines {
-            let mut x_start = 1000;
+            let mut x_start = 10000;
             let mut x_end = 0;
-            let mut y_start = 1000;
+            let mut y_start = 10000;
             let mut y_end = 0;
 
             if line.points.is_empty() {
@@ -79,9 +79,17 @@ pub fn read_page(page: &Page) -> u32 {
             //let centre = (x_end - x_start / 2, y_end - y_start / 2);
             let cell = id_cell(x_start as f32, y_start as f32);
             if cell == id_cell(x_end as f32, y_end as f32) {
-                println!("adding stroke {:?}:{:?}\t{:?}", start, end, cell);
+                //println!("adding stroke {:?}:{:?}\t{:?}", start, end, cell);
                 cellstrokes.entry(cell).or_insert(Vec::new()).push(line);
                 //                cellstrokes.insert(id_cell(x_start, x_end))
+            } else {
+                if x_end - x_start > 100 && y_end - y_start > 60 {
+                    println!("large shape detected");
+                }
+                println!(
+                    "colouring outside the lines {:?}:{:?}\t{:?}",
+                    start, end, cell
+                );
             }
             //            let (row, col) = id_cell(&line.points[0]);
             //            if row < 27 && col < 36 {
@@ -90,14 +98,16 @@ pub fn read_page(page: &Page) -> u32 {
             // }
         }
     }
+    let mut glyphs = HashMap::new();
     for (cell, strokes) in cellstrokes.iter() {
         let g = Glyph {
             strokes: strokes.to_vec(),
             cell: *cell,
         };
-        println!("{:?}:\t{:?}", cell, g.read());
+        //        println!("{:?}:\t{:?}", cell, g.read());
+        glyphs.insert(*cell, g.read());
     }
-    0
+    glyphs
 }
 
 // reading
