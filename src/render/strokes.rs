@@ -1,6 +1,7 @@
 use crate::*;
+use std::collections::HashMap;
 
-fn discretise(point: &Point, x: f32, y: f32) -> char {
+fn discretise25(point: &Point, x: f32, y: f32) -> char {
     let mat: [[char; 5]; 5] = [
         ['a', 'b', 'c', 'd', 'e'],
         ['f', 'g', 'h', 'i', 'j'],
@@ -15,10 +16,18 @@ fn discretise(point: &Point, x: f32, y: f32) -> char {
     mat[y][x]
 }
 
+fn discretise9(point: &Point, x: f32, y: f32) -> char {
+    let mat: [[char; 3]; 3] = [['a', 'b', 'c'], ['d', 'e', 'f'], ['g', 'h', 'i']];
+
+    let x = ((point.x - (52. * x)) / 17.33) as usize;
+    let y = ((point.y - (52. * y)) / 17.33) as usize;
+
+    mat[y][x]
+}
+
 struct Glyph<'a> {
     strokes: Vec<&'a Line>,
-    origin: Point,
-    centre: Point,
+    cell: (usize, usize),
 }
 
 impl Glyph<'_> {
@@ -28,23 +37,25 @@ impl Glyph<'_> {
             let mut last = 'z';
             for i in 0..stroke.points.len() {
                 let p = &stroke.points[i];
-                let chr = discretise(p, self.origin.x, self.origin.y);
+                let chr = discretise9(p, self.cell.0 as f32, self.cell.1 as f32);
                 if chr != last {
                     last = chr;
                     dstrokes.push(chr);
                 };
             }
+            dstrokes.push('_');
         }
-        vec!['a']
+        dstrokes
     }
 }
 
-fn id_cell(point: &Point) -> (usize, usize) {
+fn id_cell(x: f32, y: f32) -> (usize, usize) {
     let s = 52.;
-    ((point.x / s) as usize, (point.y / s) as usize)
+    ((x / s) as usize, (y / s) as usize)
 }
 
 pub fn read_page(page: &Page) -> u32 {
+    let mut cellstrokes = HashMap::new();
     for layer in &page.layers {
         for line in &layer.lines {
             let mut x_start = 1000;
@@ -62,13 +73,29 @@ pub fn read_page(page: &Page) -> u32 {
                 y_start = std::cmp::min(y_start, point.y as u32);
                 y_end = std::cmp::max(y_end, point.y as u32);
             }
-            let centre = (x_end - x_start / 2, y_end - y_start / 2);
-            let (row, col) = id_cell(&line.points[0]);
-            if row < 27 && col < 36 {
-                println!("{}:{}\t{:?}", row, col, centre);
+            let start = (x_start, y_start);
+            let end = (x_end, y_end);
+            // group all strokes that are contained by a cell together
+            //let centre = (x_end - x_start / 2, y_end - y_start / 2);
+            let cell = id_cell(x_start as f32, y_start as f32);
+            if cell == id_cell(x_end as f32, y_end as f32) {
+                println!("adding stroke {:?}:{:?}\t{:?}", start, end, cell);
+                cellstrokes.entry(cell).or_insert(Vec::new()).push(line);
+                //                cellstrokes.insert(id_cell(x_start, x_end))
             }
+            //            let (row, col) = id_cell(&line.points[0]);
+            //            if row < 27 && col < 36 {
+            //                let g = Glyph { start: Point { x }
+            //            }
             // }
         }
+    }
+    for (cell, strokes) in cellstrokes.iter() {
+        let g = Glyph {
+            strokes: strokes.to_vec(),
+            cell: *cell,
+        };
+        println!("{:?}:\t{:?}", cell, g.read());
     }
     0
 }
