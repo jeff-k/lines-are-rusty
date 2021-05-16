@@ -37,11 +37,24 @@ fn discretise4d(point: &Point, x: f32, y: f32) -> char {
         ['1', '2', '3', '4'],
     ];
 
-    let x = ((point.x - (52. * x)) / 13.) as usize;
-    let y = ((point.y - (52. * y)) / 13.) as usize;
+    let x = ((point.x - (52. * x)) / 26.) as usize;
+    let y = ((point.y - (52. * y)) / 26.) as usize;
+    let q = if x == 0 {
+        if y == 0 {
+            0
+        } else {
+            1
+        }
+    } else {
+        if y == 0 {
+            2
+        } else {
+            3
+        }
+    };
     let d = (point.direction / 45.) as usize;
     println!("{:?} - {:?}", point.direction, d);
-    mat[d][x + y]
+    mat[d][q]
 }
 
 struct Glyph<'a> {
